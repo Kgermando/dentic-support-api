@@ -3,7 +3,7 @@ package middlewares
 import (
 	"fmt"
 
-	"github.com/gofiber/fiber"
+	"github.com/gofiber/fiber/v2"
 	"github.com/kgermando/dentic-support-api/utils"
 )
 

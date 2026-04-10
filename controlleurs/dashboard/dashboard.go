@@ -154,7 +154,7 @@ func GetDashboard(c *fiber.Ctx) error {
 	}
 
 	switch agent.Role {
-	case "Directeur":
+	case "SuperAdmin", "Directeur":
 		return directeurDashboard(c, agent)
 	case "Chef du bureau":
 		return chefBureauDashboard(c, agent)

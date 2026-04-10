@@ -23,6 +23,7 @@ func SeedSuperAdmin() {
 		Email:     "superadmin@dentic.app",
 		Telephone: "+000000000000",
 		Role:      "SuperAdmin",
+		Permission      : "all",
 		Status:    true,
 	}
 
