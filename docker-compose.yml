@@ -1,0 +1,56 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dentic-api
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8000}:8000"
+    environment:
+      PORT: "8000"
+      DB_HOST: postgres
+      DB_PORT: "${DB_PORT:-5432}"
+      DB_USER: "${DB_USER:-dentic}"
+      DB_PASSWORD: "${DB_PASSWORD}"
+      DB_NAME: "${DB_NAME:-dentic_support}"
+      JWT_SECRET: "${JWT_SECRET}"
+      SMTP_HOST: "${SMTP_HOST}"
+      SMTP_PORT: "${SMTP_PORT}"
+      SMTP_USER: "${SMTP_USER}"
+      SMTP_PASSWORD: "${SMTP_PASSWORD}"
+    volumes:
+      - uploads_data:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - dentic-net
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: dentic-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: "${DB_USER:-dentic}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+      POSTGRES_DB: "${DB_NAME:-dentic_support}"
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-dentic} -d ${DB_NAME:-dentic_support}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - dentic-net
+
+volumes:
+  postgres_data:
+  uploads_data:
+
+networks:
+  dentic-net:
+    driver: bridge
